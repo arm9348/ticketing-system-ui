@@ -5,6 +5,7 @@
 .env.*
 !.env.example
 *.local
+.env.example
 
 # Python cache and virtual environments
 __pycache__/
