@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Ticket #{{ ticket.ticket_id }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Ticket #{{ ticket.ticket_id }}: {{ ticket.title }}</h2>
+    <p>{{ ticket.description }}</p>
+
+    <table>
+        <tbody>
+            <tr><th>Status</th><td>{{ ticket.status_name }}</td></tr>
+            <tr><th>Priority</th><td>{{ ticket.priority_name }}</td></tr>
+            <tr><th>Category</th><td>{{ ticket.category_name }}</td></tr>
+            <tr><th>Requester</th><td>{{ ticket.requester_name }} ({{ ticket.requester_email }})</td></tr>
+            <tr><th>Assignee</th><td>{{ ticket.assignee_name }}</td></tr>
+            <tr><th>Created</th><td>{{ ticket.created_at }}</td></tr>
+            <tr><th>Updated</th><td>{{ ticket.updated_at }}</td></tr>
+            <tr><th>Resolved</th><td>{{ ticket.resolved_at or 'Not resolved' }}</td></tr>
+        </tbody>
+    </table>
+
+    <div class="actions" style="margin-top: 16px;">
+        <a href="{{ url_for('ticket_edit', ticket_id=ticket.ticket_id) }}">Edit Ticket</a>
+        <form class="inline" method="post" action="{{ url_for('ticket_delete', ticket_id=ticket.ticket_id) }}">
+            <button type="submit" onclick="return confirm('Delete this ticket?');">Delete Ticket</button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Comments</h3>
+
+    {% if errors %}
+    <div class="errors">
+        {% for error in errors %}
+        <div>{{ error }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>When</th>
+                <th>Author</th>
+                <th>Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for comment in comments %}
+            <tr>
+                <td>{{ comment.created_at }}</td>
+                <td>{{ comment.author_name }} ({{ comment.author_role }})</td>
+                <td>{{ comment.comment_text }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3">No comments yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h3>Add Comment</h3>
+    <form method="post" action="{{ url_for('ticket_comment_create', ticket_id=ticket.ticket_id) }}">
+        <label for="author_id">Author</label>
+        <select id="author_id" name="author_id" required>
+            <option value="">Select author</option>
+            {% for user in options.comment_authors %}
+            <option value="{{ user.user_id }}">{{ user.name }} ({{ user.role }})</option>
+            {% endfor %}
+        </select>
+
+        <label for="comment_text">Comment</label>
+        <textarea id="comment_text" name="comment_text" rows="4" required></textarea>
+
+        <div class="actions" style="margin-top: 16px;">
+            <button type="submit">Add Comment</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

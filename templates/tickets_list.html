@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Tickets{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Ticket List</h2>
+    <form method="get" action="{{ url_for('tickets_list') }}">
+        <label for="status_id">Status</label>
+        <select id="status_id" name="status_id">
+            <option value="">All statuses</option>
+            {% for status in filter_options.statuses %}
+            <option value="{{ status.status_id }}" {% if filters.status_id == status.status_id %}selected{% endif %}>
+                {{ status.status_name }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label for="category_id">Category</label>
+        <select id="category_id" name="category_id">
+            <option value="">All categories</option>
+            {% for category in filter_options.categories %}
+            <option value="{{ category.category_id }}" {% if filters.category_id == category.category_id %}selected{% endif %}>
+                {{ category.category_name }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label for="assignee_id">Assignee</label>
+        <select id="assignee_id" name="assignee_id">
+            <option value="">All assignees</option>
+            {% for assignee in filter_options.assignees %}
+            <option value="{{ assignee.user_id }}" {% if filters.assignee_id == assignee.user_id %}selected{% endif %}>
+                {{ assignee.name }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <div class="actions" style="margin-top: 12px;">
+            <button type="submit">Apply Filters</button>
+            <a href="{{ url_for('tickets_list') }}">Clear</a>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <div class="actions">
+        <a href="{{ url_for('tickets_new') }}">Create New Ticket</a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Category</th>
+                <th>Requester</th>
+                <th>Assignee</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ticket in tickets %}
+            <tr>
+                <td>{{ ticket.ticket_id }}</td>
+                <td><a href="{{ url_for('ticket_detail', ticket_id=ticket.ticket_id) }}">{{ ticket.title }}</a></td>
+                <td>{{ ticket.status_name }}</td>
+                <td>{{ ticket.priority_name }}</td>
+                <td>{{ ticket.category_name }}</td>
+                <td>{{ ticket.requester_name }}</td>
+                <td>{{ ticket.assignee_name }}</td>
+                <td>{{ ticket.created_at }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8">No tickets found for the selected filters.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

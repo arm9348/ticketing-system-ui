@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Reports{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Reports</h2>
+    <p>Average resolution time (hours): <strong>{{ reports.average_resolution_hours if reports.average_resolution_hours is not none else 'No resolved tickets yet' }}</strong></p>
+</div>
+
+<div class="card">
+    <h3>Tickets by Category and Status</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Ticket Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in reports.tickets_by_category_status %}
+            <tr>
+                <td>{{ row.category_name }}</td>
+                <td>{{ row.status_name }}</td>
+                <td>{{ row.ticket_count }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3">No ticket data available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h3>Open Backlog by Assignee</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Assignee</th>
+                <th>Open Tickets</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in reports.open_backlog_by_assignee %}
+            <tr>
+                <td>{{ row.assignee_name }}</td>
+                <td>{{ row.open_ticket_count }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="2">No open backlog data available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

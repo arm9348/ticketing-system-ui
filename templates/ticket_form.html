@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}{{ form_title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>{{ form_title }}</h2>
+
+    {% if errors %}
+    <div class="errors">
+        {% for error in errors %}
+        <div>{{ error }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" action="{{ form_action }}">
+        <label for="title">Title</label>
+        <input
+            id="title"
+            name="title"
+            type="text"
+            maxlength="150"
+            value="{{ submitted.title if submitted else '' }}"
+            required
+        >
+
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="6" required>{{ submitted.description if submitted else '' }}</textarea>
+
+        <label for="requester_id">Requester</label>
+        <select id="requester_id" name="requester_id" required>
+            <option value="">Select requester</option>
+            {% for requester in options.requesters %}
+            <option value="{{ requester.user_id }}" {% if submitted and submitted.requester_id|string == requester.user_id|string %}selected{% endif %}>
+                {{ requester.name }} ({{ requester.email }})
+            </option>
+            {% endfor %}
+        </select>
+
+        <label for="assignee_id">Assignee</label>
+        <select id="assignee_id" name="assignee_id">
+            <option value="">Unassigned</option>
+            {% for agent in options.agents %}
+            <option value="{{ agent.user_id }}" {% if submitted and submitted.assignee_id|string == agent.user_id|string %}selected{% endif %}>
+                {{ agent.name }} ({{ agent.email }})
+            </option>
+            {% endfor %}
+        </select>
+
+        <label for="category_id">Category</label>
+        <select id="category_id" name="category_id" required>
+            <option value="">Select category</option>
+            {% for category in options.categories %}
+            <option value="{{ category.category_id }}" {% if submitted and submitted.category_id|string == category.category_id|string %}selected{% endif %}>
+                {{ category.category_name }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label for="priority_id">Priority</label>
+        <select id="priority_id" name="priority_id" required>
+            <option value="">Select priority</option>
+            {% for priority in options.priorities %}
+            <option value="{{ priority.priority_id }}" {% if submitted and submitted.priority_id|string == priority.priority_id|string %}selected{% endif %}>
+                {{ priority.priority_name }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label for="status_id">Status</label>
+        <select id="status_id" name="status_id" required>
+            <option value="">Select status</option>
+            {% for status in options.statuses %}
+            <option value="{{ status.status_id }}" {% if submitted and submitted.status_id|string == status.status_id|string %}selected{% endif %}>
+                {{ status.status_name }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <div class="actions" style="margin-top: 16px;">
+            <button type="submit">Save Ticket</button>
+            <a href="{{ url_for('tickets_list') }}">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
