@@ -1,0 +1,20 @@
+2026-04-26 17:00:33 0 [Note] Starting MariaDB 12.1.2-MariaDB source revision 70117463f032d59f8e328335e19b59157d34cf07 server_uid B3hCRJIQ0Qvws6Wx6vz4+hEaXtU= as process 96081
+2026-04-26 17:00:33 0 [Note] InnoDB: Compressed tables use zlib 1.2.12
+2026-04-26 17:00:33 0 [Note] InnoDB: Number of transaction pools: 1
+2026-04-26 17:00:33 0 [Note] InnoDB: Using crc32 + pclmulqdq instructions
+2026-04-26 17:00:33 0 [Note] InnoDB: innodb_buffer_pool_size_max=128m, innodb_buffer_pool_size=128m
+2026-04-26 17:00:33 0 [Note] InnoDB: Completed initialization of buffer pool
+2026-04-26 17:00:33 0 [Note] InnoDB: End of log at LSN=46100
+2026-04-26 17:00:33 0 [Note] InnoDB: Opened 3 undo tablespaces
+2026-04-26 17:00:33 0 [Note] InnoDB: 128 rollback segments in 3 undo tablespaces are active.
+2026-04-26 17:00:33 0 [Note] InnoDB: Setting file './ibtmp1' size to 12.000MiB. Physically writing the file full; Please wait ...
+2026-04-26 17:00:33 0 [Note] InnoDB: File './ibtmp1' size is now 12.000MiB.
+2026-04-26 17:00:33 0 [Note] InnoDB: log sequence number 46100; transaction id 14
+2026-04-26 17:00:33 0 [Note] Plugin 'FEEDBACK' is disabled.
+2026-04-26 17:00:33 0 [Note] InnoDB: Loading buffer pool(s) from /Users/alexmcdonald/Desktop/ticketing-system/.mariadb-data/ib_buffer_pool
+2026-04-26 17:00:33 0 [Note] Plugin 'wsrep-provider' is disabled.
+2026-04-26 17:00:33 0 [Note] InnoDB: Buffer pool(s) load completed at 260426 17:00:33
+2026-04-26 17:00:36 0 [Note] Server socket created on IP: '127.0.0.1', port: '3307'.
+2026-04-26 17:00:36 0 [Note] mariadbd: Event Scheduler: Loaded 0 events
+2026-04-26 17:00:36 0 [Note] /usr/local/opt/mariadb/bin/mariadbd: ready for connections.
+Version: '12.1.2-MariaDB'  socket: '/Users/alexmcdonald/Desktop/ticketing-system/.mariadb-run/mariadb.sock'  port: 3307  Homebrew

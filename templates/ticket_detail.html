@@ -17,32 +17,54 @@
             <tr><th>Created</th><td>{{ ticket.created_at }}</td></tr>
             <tr><th>Updated</th><td>{{ ticket.updated_at }}</td></tr>
             <tr><th>Resolved</th><td>{{ ticket.resolved_at or 'Not resolved' }}</td></tr>
+            <tr><th>Age (hours)</th><td>{{ ticket.age_hours }}</td></tr>
         </tbody>
     </table>
 
     <div class="actions" style="margin-top: 16px;">
         <a href="{{ url_for('ticket_edit', ticket_id=ticket.ticket_id) }}">Edit Ticket</a>
-        <form class="inline" method="post" action="{{ url_for('ticket_delete', ticket_id=ticket.ticket_id) }}">
-            <button type="submit" onclick="return confirm('Delete this ticket?');">Delete Ticket</button>
+        <form method="post" action="{{ url_for('ticket_delete', ticket_id=ticket.ticket_id) }}" onsubmit="return confirm('Delete this ticket?');">
+            <button type="submit">Delete Ticket</button>
         </form>
     </div>
 </div>
 
 <div class="card">
-    <h3>Comments</h3>
-
-    {% if errors %}
-    <div class="errors">
-        {% for error in errors %}
-        <div>{{ error }}</div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
+    <h3>Ticket History</h3>
     <table>
         <thead>
             <tr>
-                <th>When</th>
+                <th>Changed At</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Changed By</th>
+                <th>Note</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in history %}
+            <tr>
+                <td>{{ entry.changed_at }}</td>
+                <td>{{ entry.old_status_name or 'None' }}</td>
+                <td>{{ entry.new_status_name }}</td>
+                <td>{{ entry.changed_by_name or 'System' }}</td>
+                <td>{{ entry.note or '' }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5">No history available for this ticket yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h3>Comments</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Created</th>
                 <th>Author</th>
                 <th>Comment</th>
             </tr>
@@ -65,6 +87,15 @@
 
 <div class="card">
     <h3>Add Comment</h3>
+
+    {% if errors %}
+    <div class="errors">
+        {% for error in errors %}
+        <div>{{ error }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <form method="post" action="{{ url_for('ticket_comment_create', ticket_id=ticket.ticket_id) }}">
         <label for="author_id">Author</label>
         <select id="author_id" name="author_id" required>

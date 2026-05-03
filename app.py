@@ -9,6 +9,7 @@ from services.helpdesk_service import (
     get_ticket,
     get_ticket_comments,
     get_ticket_form_options,
+    get_ticket_history,
     list_tickets,
     update_ticket,
 )
@@ -54,8 +55,8 @@ def tickets_new():
 
 @app.route("/tickets", methods=["POST"])
 def tickets_create():
-    form_data = request.form.to_dict()
-    errors, ticket_id = create_ticket(form_data)
+    submitted = request.form.to_dict()
+    errors, ticket_id = create_ticket(submitted)
     if errors:
         return render_template(
             "ticket_form.html",
@@ -64,7 +65,7 @@ def tickets_create():
             form_title="Create Ticket",
             options=get_ticket_form_options(),
             errors=errors,
-            submitted=form_data,
+            submitted=submitted,
         ), 400
     return redirect(url_for("ticket_detail", ticket_id=ticket_id))
 
@@ -75,11 +76,11 @@ def ticket_detail(ticket_id):
     if not ticket:
         return render_template("not_found.html", item_name="Ticket"), 404
 
-    comments = get_ticket_comments(ticket_id)
     return render_template(
         "ticket_detail.html",
         ticket=ticket,
-        comments=comments,
+        comments=get_ticket_comments(ticket_id),
+        history=get_ticket_history(ticket_id),
         options=get_ticket_form_options(),
         errors=[],
     )
@@ -102,20 +103,20 @@ def ticket_edit(ticket_id):
     )
 
 
-@app.route("/tickets/<int:ticket_id>/update", methods=["POST"])
+@app.route("/tickets/<int:ticket_id>/edit", methods=["POST"])
 def ticket_update(ticket_id):
-    existing_ticket = get_ticket(ticket_id)
-    if not existing_ticket:
+    ticket = get_ticket(ticket_id)
+    if not ticket:
         return render_template("not_found.html", item_name="Ticket"), 404
 
-    form_data = request.form.to_dict()
-    errors = update_ticket(ticket_id, form_data)
+    submitted = request.form.to_dict()
+    errors = update_ticket(ticket_id, submitted)
     if errors:
-        merged_data = dict(existing_ticket)
-        merged_data.update(form_data)
+        merged_data = dict(ticket)
+        merged_data.update(submitted)
         return render_template(
             "ticket_form.html",
-            ticket=existing_ticket,
+            ticket=ticket,
             form_action=url_for("ticket_update", ticket_id=ticket_id),
             form_title=f"Edit Ticket #{ticket_id}",
             options=get_ticket_form_options(),
@@ -144,6 +145,7 @@ def ticket_comment_create(ticket_id):
             "ticket_detail.html",
             ticket=ticket,
             comments=comments,
+            history=get_ticket_history(ticket_id),
             options=get_ticket_form_options(),
             errors=errors,
         ), 400

@@ -95,3 +95,20 @@ INSERT INTO ticket_comments (ticket_id, author_id, comment_text, created_at) VAL
     'Patch cycle verified and server health checks passed after restart.',
     DATE_SUB(NOW(), INTERVAL 1 DAY)
 );
+
+INSERT INTO ticket_history (
+    ticket_id,
+    old_status_id,
+    new_status_id,
+    changed_by,
+    changed_at,
+    note
+) VALUES
+(1, NULL, 1, 1, DATE_SUB(NOW(), INTERVAL 2 DAY), 'Ticket submitted'),
+(1, 1, 2, 3, DATE_SUB(NOW(), INTERVAL 44 HOUR), 'Assigned to Avery Agent'),
+(1, 2, 3, 2, DATE_SUB(NOW(), INTERVAL 30 HOUR), 'Investigation started'),
+(2, NULL, 1, 3, DATE_SUB(NOW(), INTERVAL 5 DAY), 'Maintenance ticket created'),
+(2, 1, 2, 3, DATE_SUB(NOW(), INTERVAL 116 HOUR), 'Assigned for patch review'),
+(2, 2, 3, 2, DATE_SUB(NOW(), INTERVAL 100 HOUR), 'Work started'),
+(2, 3, 5, 2, DATE_SUB(NOW(), INTERVAL 1 DAY), 'Resolved after patch verification'),
+(3, NULL, 1, 1, DATE_SUB(NOW(), INTERVAL 8 HOUR), 'New employee onboarding request created');

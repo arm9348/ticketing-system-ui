@@ -19,10 +19,7 @@ def _config_value(name, default):
 
 
 def _db_host():
-    host = _config_value("DB_HOST", "localhost")
-    if host == "127.0.0.1":
-        return "localhost"
-    return host
+    return _config_value("DB_HOST", "localhost")
 
 
 def get_connection():

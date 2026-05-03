@@ -132,7 +132,8 @@ def get_ticket(ticket_id):
             COALESCE(assignee.name, 'Unassigned') AS assignee_name,
             c.category_name,
             p.priority_name,
-            s.status_name
+            s.status_name,
+            ticket_age_hours(t.ticket_id) AS age_hours
         FROM tickets t
         JOIN users requester ON requester.user_id = t.requester_id
         LEFT JOIN users assignee ON assignee.user_id = t.assignee_id
@@ -160,6 +161,47 @@ def get_ticket_comments(ticket_id):
         ORDER BY tc.created_at ASC, tc.comment_id ASC
         """,
         (ticket_id,),
+    )
+
+
+def get_ticket_history(ticket_id):
+    return fetch_all(
+        """
+        SELECT
+            th.history_id,
+            th.changed_at,
+            th.note,
+            old_status.status_name AS old_status_name,
+            new_status.status_name AS new_status_name,
+            u.name AS changed_by_name
+        FROM ticket_history th
+        LEFT JOIN statuses old_status ON old_status.status_id = th.old_status_id
+        JOIN statuses new_status ON new_status.status_id = th.new_status_id
+        LEFT JOIN users u ON u.user_id = th.changed_by
+        WHERE th.ticket_id = ?
+        ORDER BY th.changed_at ASC, th.history_id ASC
+        """,
+        (ticket_id,),
+    )
+
+
+def get_open_ticket_summary():
+    return fetch_all(
+        """
+        SELECT
+            ots.ticket_id,
+            ots.title,
+            ots.requester_name,
+            ots.assignee_name,
+            ots.category_name,
+            ots.priority_name,
+            ots.status_name,
+            ots.created_at,
+            ots.updated_at,
+            ticket_age_hours(ots.ticket_id) AS age_hours
+        FROM open_ticket_summary ots
+        ORDER BY ots.priority_sort_order DESC, ots.created_at DESC
+        """
     )
 
 
@@ -345,4 +387,5 @@ def get_report_data():
         "average_resolution_hours": average_resolution["average_resolution_hours"]
         if average_resolution
         else None,
+        "open_ticket_summary": get_open_ticket_summary(),
     }
